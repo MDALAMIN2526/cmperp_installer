@@ -85,7 +85,7 @@ You need to install the following packages for the script to run:
 Download the Easy Install script and execute it:
 
 ```sh
-$ https://raw.githubusercontent.com/MDALAMIN2526/cmperp_installer/main/install.py
+$ wget https://raw.githubusercontent.com/MDALAMIN2526/cmperp_installer/main/install.py
 $ python3 install.py --production
 ```
 
