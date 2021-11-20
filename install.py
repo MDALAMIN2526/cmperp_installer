@@ -98,8 +98,8 @@ def check_distribution_compatibility():
 
 
 def import_with_install(package):
-	# copied from https://discuss.erpnext.com/u/nikunj_patel
-	# https://discuss.erpnext.com/t/easy-install-setup-guide-for-erpnext-installation-on-ubuntu-20-04-lts-with-some-modification-of-course/62375/5
+	# copied from https://discuss.cpmerp.com/u/nikunj_patel
+	# https://discuss.cpmerp.com/t/easy-install-setup-guide-for-cpmerp-installation-on-ubuntu-20-04-lts-with-some-modification-of-course/62375/5
 	# need to move to top said v13 for fully python3 era
 	import importlib
 
@@ -215,7 +215,7 @@ def install_bench(args):
 
 	if not args.user:
 		if args.production:
-			args.user = 'pef'
+			args.user = 'cpm'
 
 		elif 'SUDO_USER' in os.environ:
 			args.user = os.environ['SUDO_USER']
@@ -252,32 +252,32 @@ def install_bench(args):
 		extra_vars.update(max_worker_connections=multiprocessing.cpu_count() * 1024)
 
 	frappe_branch = 'version-13'
-	erpnext_branch = 'version-13'
+	cpmerp_branch = 'version-13'
 
 	if args.version:
 		if args.version <= 10:
 			frappe_branch = "{0}.x.x".format(args.version)
-			erpnext_branch = "{0}.x.x".format(args.version)
+			cpmerp_branch = "{0}.x.x".format(args.version)
 		else:
 			frappe_branch = "version-{0}".format(args.version)
-			erpnext_branch = "version-{0}".format(args.version)
-	# Allow override of frappe_branch and erpnext_branch, regardless of args.version (which always has a default set)
+			cpmerp_branch = "version-{0}".format(args.version)
+	# Allow override of frappe_branch and cpmerp_branch, regardless of args.version (which always has a default set)
 	if args.frappe_branch:
 		frappe_branch = args.frappe_branch
-	if args.erpnext_branch:
-		erpnext_branch = args.erpnext_branch
+	if args.cpmerp_branch:
+		cpmerp_branch = args.cpmerp_branch
 
 	extra_vars.update(frappe_branch=frappe_branch)
-	extra_vars.update(erpnext_branch=erpnext_branch)
+	extra_vars.update(cpmerp_branch=cpmerp_branch)
 
 	bench_name = 'frappe-bench' if not args.bench_name else args.bench_name
 	extra_vars.update(bench_name=bench_name)
 
-	# Will install ERPNext production setup by default
-	if args.without_erpnext:
-		log("Initializing bench {bench_name}:\n\tFrappe Branch: {frappe_branch}\n\tERPNext will not be installed due to --without-erpnext".format(bench_name=bench_name, frappe_branch=frappe_branch))
+	# Will install cpmerp production setup by default
+	if args.without_cpmerp:
+		log("Initializing bench {bench_name}:\n\tFrappe Branch: {frappe_branch}\n\tCPMERP will not be installed due to --without-cpmerp".format(bench_name=bench_name, frappe_branch=frappe_branch))
 	else:
-		log("Initializing bench {bench_name}:\n\tFrappe Branch: {frappe_branch}\n\tERPNext Branch: {erpnext_branch}".format(bench_name=bench_name, frappe_branch=frappe_branch, erpnext_branch=erpnext_branch))
+		log("Initializing bench {bench_name}:\n\tFrappe Branch: {frappe_branch}\n\tCPMERP Branch: {cpmerp_branch}".format(bench_name=bench_name, frappe_branch=frappe_branch, cpmerp_branch=cpmerp_branch))
 	run_playbook('site.yml', sudo=True, extra_vars=extra_vars)
 
 	if os.path.exists(tmp_bench_repo):
@@ -433,19 +433,19 @@ def parse_commandline_args():
 
 	args_group.add_argument('--develop', dest='develop', action='store_true', default=False, help='Install developer setup')
 	args_group.add_argument('--production', dest='production', action='store_true', default=False, help='Setup Production environment for bench')
-	parser.add_argument('--site', dest='site', action='store', default='site1.local', help='Specify name for your first ERPNext site')
+	parser.add_argument('--site', dest='site', action='store', default='cpm', help='Specify name for your first CPMERP site')
 	parser.add_argument('--without-site', dest='without_site', action='store_true', default=False, help='Do not create a new site')
 	parser.add_argument('--verbose', dest='verbose', action='store_true', default=False, help='Run the script in verbose mode')
 	parser.add_argument('--user', dest='user', help='Install frappe-bench for this user')
 	parser.add_argument('--bench-branch', dest='bench_branch', help='Clone a particular branch of bench repository')
 	parser.add_argument('--repo-url', dest='repo_url', help='Clone bench from the given url')
-	parser.add_argument('--frappe-repo-url', dest='frappe_repo_url', action='store', default='https://github.com/frappe/frappe', help='Clone frappe from the given url')
+	parser.add_argument('--frappe-repo-url', dest='frappe_repo_url', action='store', default='https://github.com/MDALAMIN2526/frappe', help='Clone frappe from the given url')
 	parser.add_argument('--frappe-branch', dest='frappe_branch', action='store', help='Clone a particular branch of frappe')
-	parser.add_argument('--erpnext-repo-url', dest='erpnext_repo_url', action='store', default='https://github.com/frappe/erpnext', help='Clone erpnext from the given url')
-	parser.add_argument('--erpnext-branch', dest='erpnext_branch', action='store', help='Clone a particular branch of erpnext')
-	parser.add_argument('--without-erpnext', dest='without_erpnext', action='store_true', default=False, help='Prevent fetching ERPNext')
+	parser.add_argument('--cpmerp-repo-url', dest='cpmerp_repo_url', action='store', default='https://github.com/MDALAMIN2526/cpmerp', help='Clone cpmerp from the given url')
+	parser.add_argument('--cpmerp-branch', dest='cpmerp_branch', action='store', help='Clone a particular branch of cpmerp')
+	parser.add_argument('--without-cpmerp', dest='without_cpmerp', action='store_true', default=False, help='Prevent fetching CPMERP')
 	# direct provision to install versions
-	parser.add_argument('--version', dest='version', action='store', default='12', type=int, help='Clone particular version of frappe and erpnext')
+	parser.add_argument('--version', dest='version', action='store', default='13', type=int, help='Clone particular version of frappe and cpmerp')
 	# To enable testing of script using Travis, this should skip the prompt
 	parser.add_argument('--run-travis', dest='run_travis', action='store_true', default=False, help=argparse.SUPPRESS)
 	parser.add_argument('--without-bench-setup', dest='without_bench_setup', action='store_true', default=False, help=argparse.SUPPRESS)
@@ -499,4 +499,4 @@ if __name__ == '__main__':
 		check_environment()
 		install_bench(args)
 
-	log("Bench + Frappe + ERPNext has been successfully installed!")
+	log("Bench + Frappe + CPMERP has been successfully installed!")
