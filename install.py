@@ -215,7 +215,7 @@ def install_bench(args):
 
 	if not args.user:
 		if args.production:
-			args.user = 'frappe'
+			args.user = 'cpm'
 
 		elif 'SUDO_USER' in os.environ:
 			args.user = os.environ['SUDO_USER']
